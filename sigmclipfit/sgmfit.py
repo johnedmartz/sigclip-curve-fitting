@@ -49,7 +49,7 @@ class sgmfit():
 
 
         #Values to force the first iteration
-        len_valid = 0 
+        len_valid = -1 
         len_y = len(y)
         n_cycles = 0
 
@@ -58,8 +58,11 @@ class sgmfit():
         while len_valid < len_y:
 
             # Fits the data with the given model
-            result = self.model.fit(y, i_params, x=x)
-            
+            try:
+                result = self.model.fit(y, i_params, x=x)
+            except:
+                raise ValueError("Can't fit curve with current parameters (Valid points = {})".format(len_valid))
+
             # Saves the parameters found in the fit and sets them as the new initial parameters for the next iteration
             params = self.model.make_params()     
             for p in params:
@@ -79,7 +82,7 @@ class sgmfit():
             len_y = len(y)                          # Number of points in this iteration
             len_valid = len(valid[valid==True])     # Number of points inside threshold
 
-
+            
             # New x and y used for the next iteration
             x = x[valid]
             y = y[valid]
