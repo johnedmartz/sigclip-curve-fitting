@@ -67,7 +67,7 @@ class sgmfit():
 
 
         # This loop keeps going until all the points used for the fit are inside the threshold
-        while len_valid < len_y and n_cycles <= max_iter:
+        while len_valid < len_y and n_cycles < max_iter:
 
             # Fits the data with the given model
             try:
