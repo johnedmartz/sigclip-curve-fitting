@@ -29,11 +29,12 @@ class sgmfit():
         self.nsigm = n_sigm
         
 
-    def fit_model(self, max_iter=np.inf):
+    def fit_model(self, keep_i_values = False, max_iter=np.inf):
         """
         Function that makes the fit with sigma clipping until it converges or reach the maximum number of iterations (if given)
         
         Args:
+            keep_i_values (bool): option to keep the original initial values or change them to the ones obtained in the previous iteration
             max_iter (int): maximum number of sigma clipping iterations 
 
         Returns:
@@ -78,7 +79,8 @@ class sgmfit():
             params = self.model.make_params()     
             for p in params:
                 params[p].value = result.params[p].value
-                i_params[p].value = result.params[p].value
+                if keep_i_values == False:
+                    i_params[p].value = result.params[p].value
 
             # Subtract the original values from the new ones
             delt = y - self.model.eval(params, x=x)
