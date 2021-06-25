@@ -1,14 +1,20 @@
 import inspect
 import matplotlib.pyplot as plt 
 import numpy as np
+
 from lmfit import Model
 
 
 
 class sgmfit():
     """
-    asd
-    asd
+    Fits any given function to data using sigma clipping to remove outliers.
+
+    Args:
+        x_data, y_data (np.array): data to be fitted
+        model_function (function): model used
+        i_values (np.array): list of initial values for the coefficients in the same order as they appear in the function
+        n_sigm (float): number of standard deviations used as threshold of the sigma clipping
     """
 
     def __init__(self, x_data, y_data, model_function, i_values, n_sigm):
@@ -23,10 +29,15 @@ class sgmfit():
         self.nsigm = n_sigm
         
 
-    def fit_model(self):
+    def fit_model(self, max_iter=np.inf):
         """
-        asd
-        asd
+        Function that makes the fit with sigma clipping until it converges or reach the maximum number of iterations (if given)
+        
+        Args:
+            max_iter (int): maximum number of sigma clipping iterations 
+
+        Returns:
+            result (lmfit.model.ModelResult): final result and statistics of the fit
         """
 
         x = self.x_data
@@ -55,7 +66,7 @@ class sgmfit():
 
 
         # This loop keeps going until all the points used for the fit are inside the threshold
-        while len_valid < len_y:
+        while len_valid < len_y and n_cycles <= max_iter:
 
             # Fits the data with the given model
             try:
@@ -95,11 +106,15 @@ class sgmfit():
         self.result = result
         self.params = params
 
+        return self.result
     
+
     def fit_plot(self, n=100):
         """
-        asd
-        asd
+        Function that plots the original data with the final data used for the fit and draws the model
+
+        Args:
+            n (int): number of points used to draw the model
         """
 
         x_curve = np.linspace(min(self.x_data), max(self.x_data), num=n)
